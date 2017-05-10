@@ -1,0 +1,39 @@
+# create a docker-compose.yml file
+version: "3"
+services:
+  web:
+    image: ccoloradoc/node-app:0.2
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 100M
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - webnet
+    depends_on:
+      - 'webnet'
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - webnet
+    depends_on:
+      - 'webnet'
+  redis:
+    image: redis
+    ports:
+        - "6379:6379"
+    networks:
+      - webnet
+    depends_on:
+      - 'webnet'
+networks:
+  webnet:
